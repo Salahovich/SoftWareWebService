@@ -3,6 +3,7 @@ package cs.software.project.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,12 +31,29 @@ public class DriverController {
 			return "The driver userName is unavailable";
 	}
 	
+	@GetMapping("drivers/menu")
+	public String menu() {
+		if(current != null) {
+			return "Welcome driver " + current.getUserName() + " to system." + " -- Balance = " + current.getWallet().getBalance()+
+			"\n1- Show Available Rides" +
+			"\n 2- Show Complete Rides" + 
+			"\n 3- Show Client Ratings" + 
+			"\n 4- Show Favorite Areas" + 
+			"\n 5- Add Favortite Area";
+		}else
+			return "there's no such a driver";
+	}
+	
 	@GetMapping("drivers/signin")
 	public String signIn(@RequestParam String userName, @RequestParam String password) {
 		current = DataBase.getData().DriverExists(userName, password);
 		if(current != null) {
-			return "Welcome Driver" + userName + " to system."
-			+ "1- T Show available rides" + "2- Show Client Ratings" + "3- Show Favorite Areas" + "4-  Add favortite Area";
+			return "Welcome driver " + current.getUserName() + " to system." + " -- Balance = " + current.getWallet().getBalance()+
+					"\n1- Show Available Rides" +
+					"\n2- Show Complete Rides" + 
+					"\n3- Show Client Ratings" + 
+					"\n4- Show Favorite Areas" + 
+					"\n5- Add Favortite Area";
 		}else
 			return "there's no such a driver";
 	}
@@ -47,19 +65,52 @@ public class DriverController {
 		}else
 			return "you must sign in first";
 	}
-	@PostMapping("drivers/{userName}/4")
-	public String addFavAreas(@PathVariable String userName, @RequestBody String area) {
-		if(current != null && current.getUserName().equals(userName)) {				
+	@GetMapping("drivers/1")
+	public String showAvailable() {
+		if(current != null) {
+			return current.displayAvailable();
+		}else
+			return "You must sign in first.";		
+	}
+	@PutMapping("drivers/1/{index}/{cost}")
+	public String setCost(@PathVariable int index, @PathVariable double cost) {
+		if(current != null) {		
+			if(current.setOffer(index, cost)) {
+				return "offer has been added successfully";
+			}else
+				return "please choose correct ride";
+		}else
+			return "You must sign in first.";	
+	}
+	@GetMapping("drivers/2")
+	public String showComlete() {
+		if(current != null) {
+			return current.displayComplete().toString();
+		}else
+			return "You must sign in first.";
+	}
+	@GetMapping("drivers/3")
+	public String showRatings() {
+		if(current != null) {
+			return current.displayRatings();
+		}else
+			return "You must sign in first.";
+	}
+	@GetMapping("drivers/4")
+	public String showAreas() {
+		if(current != null) {
+			System.out.println(current.displayFavAreas());
+			return current.displayFavAreas();
+		}else
+			return "You must sign in first.";
+	}
+	
+	@PutMapping("drivers/5/{area}")
+	public String addFavAreas(@PathVariable String area) {
+		if(current != null) {		
 			current.setFavArea(area);
 			return "Area has been added successfully.";
 		}else
 			return "you must sign in first";
-	}
-	@GetMapping("drivers/{userName}/3")
-	public String showAreas(@PathVariable String userName) {
-		if(current != null) {
-			return current.displayFavAreas();
-		}else
-			return "You must sign in first.";
 	}
 }

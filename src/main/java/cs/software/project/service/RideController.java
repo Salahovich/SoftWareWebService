@@ -8,7 +8,7 @@ public class RideController {
 	private static ArrayList<OnlyDrivers> myDrivers = new ArrayList<OnlyDrivers>();
 	
 	
-	public void notifyDrivers(Ride myRide) {
+	public static void notifyDrivers(Ride myRide) {
 		for(OnlyDrivers only : myDrivers) {
 			only.newRide(myRide);
 		}

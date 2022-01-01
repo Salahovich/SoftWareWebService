@@ -1,7 +1,10 @@
 package cs.software.project.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Date;
 
 public class Ride {
@@ -9,23 +12,22 @@ public class Ride {
 	private String source;
 	private String destination;
 	private Driver mainDriver;
-	private ArrayList<Client> friends;
+	private ArrayList<String> friends;
 	private Client mainPassenger;
 	private double cost;
 	private Date date;
 	private HashMap<Double, Driver> availableDrivers;
 	
 	Ride(){
-		
+		this.date = new Date();
+		this.friends = new ArrayList<>();
+		this.availableDrivers = new HashMap<Double, Driver>();
+		this.events = new ArrayList<>();
 	}
 	Ride(String s, String d, Client c){
 		this.source = s;
 		this.destination = d;
 		this.mainPassenger = c;
-		this.date = new Date();
-		this.friends = new ArrayList<>();
-		this.availableDrivers = new HashMap<Double, Driver>();
-		this.events = new ArrayList<>();
 	}
 	
 	public void completeTheRide(Driver iDriver, double cost) {
@@ -38,8 +40,8 @@ public class Ride {
 		this.mainDriver.addCompleteRide(this);		
 		
 		double discounted = makeDiscount(cost);
-		
-		this.mainPassenger.getWallet().deposit(discounted);
+		System.out.println(discounted);
+		this.mainPassenger.getWallet().withdraw(discounted);
 		this.mainPassenger.addRideToComplete(this);
 
 	}
@@ -49,16 +51,24 @@ public class Ride {
 	
 	public double makeDiscount(double cost) {
 		double discounted = cost;
-		if(DataBase.getData().hasDiscount(destination)) 
-			discounted -= ((10/100)*cost); 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date d = null;
+		try {
+			d = formatter.parse(this.mainPassenger.getBirthDate());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(DataBase.getData().hasDiscount(destination)) {
+			discounted -= 0.1*cost; 
+		}
 		if(this.mainPassenger.firstRide()) {
-			discounted -=  ((10/100)*cost); 
+			discounted -=  0.1*cost; 
 			this.mainPassenger.notFirstRide();
 		}
 		if(this.friends.size() == 2)
-			discounted -=  ((5/100)*cost); 
-		//if(this.mainPassenger.getBirthDate().getDay() == date.getDay() && this.mainPassenger.getBirthDate().getMonth() == date.getMonth() )
-			//discounted -=  ((10/100)*cost);
+			discounted -=  0.05*cost; 
+		if(d.getDay() == date.getDay() && d.getMonth() == date.getMonth() )
+			discounted -=  0.1*cost;
 		return discounted;
 	}
 	// Setter Methods 
@@ -68,14 +78,21 @@ public class Ride {
 	public void setDriver(Driver iDriver) {
 		this.mainDriver = iDriver;
 	}
+	public void setPassenger(Client iClient) {
+		this.mainPassenger = iClient;
+	}
 	public void addEvent(String name) {
 		this.events.add(new Event(name, new Date()));
 	}
-	public boolean addFriends(String userName) {
-		Client c = DataBase.getData().clientNameExists(userName);
-		if(c!= null) {
-			friends.add(c);
-			return true;
+	public void addFriend(String userName) {
+		if(DataBase.getData().clientNameExists(userName)!= null) {
+			this.friends.add(userName);
+		}
+	}
+	public boolean eventHappened(String e) {
+		for(Event ev : events) {
+			if(ev.getName().equals(e))
+				return true;
 		}
 		return false;
 	}
@@ -98,19 +115,17 @@ public class Ride {
 	public int getSizeOfAvailable() {
 		return availableDrivers.size();
 	}
-	public void displayAvailable() {
+	public String displayAvailable() {
 		
-		System.out.println(availableDrivers.toString());
+		return 	availableDrivers.toString();
 	}
-	public void displayEvents() {
-		for(Event e : this.events)
-			System.out.println(e.toString());
+	public String displayEvents() {
+		return this.events.toString();
 	}
+	
 	public String toString() {
-		return "Source= " + this.getSource() + ", Destination= " + this.getDestination() + ", Date= " + this.date.toString();
-	}
-	public String displayRide() {
 		return "Source= " + this.getSource() + "\nDestination= " + this.getDestination() + "\nCost= " + this.getCost() + 
-				"\nDriver= " + this.getDriver().getUserName() + ", Date= " + this.date.toString();
+				"\nDriver= " + this.getDriver() + ", Date= " + this.date.toString()  + ", Passengers= " + this.friends.toString();
 	}
+
 }

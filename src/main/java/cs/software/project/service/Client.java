@@ -22,10 +22,7 @@ public class Client extends User implements Ratable{
 	}
 	
 	@Override
-	public void rateDriver(Driver iDriver) {
-		Scanner scanner = new Scanner(System.in);
-		System.out.print("Enter your rate from 1-5: ");
-		int rate = scanner.nextInt();
+	public void rateDriver(Driver iDriver, int rate) {
 		iDriver.addToMyRatings(this, rate);
 		iDriver.clacAvergae(rate);
 	}

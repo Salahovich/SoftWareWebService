@@ -3,6 +3,6 @@ package cs.software.project.service;
 
 public interface Ratable {
 
-	public void rateDriver(Driver myDriver);
+	public void rateDriver(Driver myDriver, int value);
 
 }

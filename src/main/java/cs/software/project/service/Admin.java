@@ -10,18 +10,15 @@ import java.util.Scanner;
 public class Admin{
 	
 	static List<Driver> pendingDrivers = new LinkedList<Driver>();
-	private DataBase myData = DataBase.getData();
+	static DataBase myData = DataBase.getData();
 	
 	public static void addToPendingDrivers(Driver iDriver) {
 		pendingDrivers.add(iDriver);
 	}
-	public void showStateofRides() {
-		ArrayList<Ride> rides = myData.getPendingRides();
-		for(Ride r : rides) {
-			System.out.println("Ride from " + r.getSource() + " to " + r.getDestination());
-			r.displayEvents();
-			System.out.println("********************************************");
-		}
+	public static String showStateOfRide(int index) {
+		Ride r =myData.getPendingRide(index);
+		return "Ride from " + r.getSource() + " to " + r.getDestination() + ": "+
+		r.displayEvents();
 	}
 	public static boolean AcceptDriver(String name) {
 		Driver driver=null;
@@ -37,23 +34,26 @@ public class Admin{
 		}
 		return false;
 	}
-	public void suspendDriver(String name) {
+	public static void suspendDriver(String name) {
 		myData.removeDriverFromSystem(name);
 	}
-	public void suspendClient(String name) {
+	public static void suspendClient(String name) {
 		myData.removeClientFromSystem(name);
 	}
-	public void addDiscountArea(String area) {
+	public static void addDiscountArea(String area) {
 		myData.addToDiscountAreas(area);
 	}
 	public static List<Driver> getPendingDrivers(){
 		return pendingDrivers;
 	}
-	public void DisplayAllClients() {
-		DataBase.getData().displayAllDrivers();
+	public static String DisplayAllPendingRides() {
+		return DataBase.getData().displayPendingRides();
 	}
-	public void DisplayAllDrivers() {
-		DataBase.getData().displayAllClients();
+	public static String DisplayAllClients() {
+		return DataBase.getData().displayAllDrivers();
+	}
+	public static String DisplayAllDrivers() {
+		return DataBase.getData().displayAllClients();
 	}
 
 }

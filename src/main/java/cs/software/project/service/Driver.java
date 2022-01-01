@@ -17,7 +17,7 @@ public class Driver extends User implements OnlyDrivers{
 	private int sumOfRate;
 	private double averageRating;
 	private ArrayList<Ride> completeRides= new ArrayList<Ride>();
-	private Queue<Ride> pendingRides= new LinkedList<Ride>();
+	private ArrayList<Ride> pendingRides= new ArrayList<Ride>();
 	private ArrayList<String> favAreas = new ArrayList<String>();
 	
 	public Driver(){
@@ -97,20 +97,25 @@ public class Driver extends User implements OnlyDrivers{
 	public void setFavArea(String area) {
 			favAreas.add(area);		
 	}
+	public boolean setOffer(int index, double cost) {
+		if(index>= 1 && index<=pendingRides.size()) {			
+			pendingRides.get(index-1).addToMap(this, cost);
+			pendingRides.get(index-1).addEvent("Captain added price");
+			pendingRides.remove(index-1);
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * 
 	 */
-	public void setOffer() {
-		Scanner scanner = new Scanner(System.in);
-		double cost;
-		while(!pendingRides.isEmpty()) {
-			System.out.println(pendingRides.peek().toString());
-			System.out.println("Enter your offer for this Ride: ");
-			cost = scanner.nextDouble();
-			pendingRides.peek().addToMap(this, cost);
-			pendingRides.peek().addEvent("Captain added price");
-			pendingRides.poll();
-		}
+	public String displayAvailable() {
+		return this.pendingRides.toString();
+	
+	}
+	public String displayComplete() {
+		return this.completeRides.toString();
+	
 	}
 	public String displayRatings() {
 		return this.myRatings.toString();

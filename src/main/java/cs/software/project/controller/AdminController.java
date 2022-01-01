@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,20 +17,21 @@ import cs.software.project.service.Driver;
 @RestController
 public class AdminController {
 
+	Admin myAdmin = new Admin();
 	@GetMapping("/admin")
 	public String menu() {
 		return "Welcome Admin to Rakabny"+
-		"1- Accept pending drivers"+
-		"2- Delete driver"+
-		"3- Delete client"+
-		"4- Show Rides State"+
-		"5- Add 10% discount to areas";
+		"\n1- Accept pending drivers"+
+		"\n2- Delete driver"+
+		"\n3- Delete client"+
+		"\n4- Show Rides State"+
+		"\n5- Add 10% discount to areas";
 	}
 	
 	@DeleteMapping("/admin/3/{userName}")
 	public String deleteClient(@PathVariable String userName) {
 		if(DataBase.getData().clientNameExists(userName) != null) {
-			DataBase.getData().removeClientFromSystem(userName);
+			myAdmin.suspendClient(userName);
 			return "Client has been deleted succesfully";
 		}else {
 			return "There's such a client";
@@ -39,17 +41,25 @@ public class AdminController {
 	@DeleteMapping("/admin/2/{userName}")
 	public String deleteDriver(@PathVariable String userName) {
 		if(DataBase.getData().driverNameExists(userName) != null) {
-			DataBase.getData().removeDriverFromSystem(userName);
+			Admin.suspendDriver(userName);
 			return "Driver has been deleted succesfully";
 		}else {
 			return "There's such a driver";
 		}
 	}
 	
-	@PostMapping("/admin/5")
-	public String addAreas(@RequestBody String area) {
-		DataBase.getData().addToDiscountAreas(area);
+	@PutMapping("/admin/5/{area}")
+	public String addAreas(@PathVariable String area) {
+		myAdmin.addDiscountArea(area);
 		return "Area added succesfully.";
+	}
+	@GetMapping("/admin/4")
+	public String showPenidingState() {
+		return Admin.DisplayAllPendingRides();
+	}
+	@GetMapping("/admin/4/{index}")
+	public String showRidesState(@PathVariable int index) {
+		return Admin.showStateOfRide(index-1);
 	}
 	@GetMapping("/admin/1")
 	public String showPendingDrivers() {

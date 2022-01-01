@@ -97,14 +97,17 @@ public class DataBase {
 		public boolean hasDiscount(String area) {
 			return discountAreas.contains(area);
 		}
-		public ArrayList<Ride> getPendingRides(){
-			return this.pendingRides;
+		public Ride getPendingRide(int index){
+			return this.pendingRides.get(index);
 		}
-		public void displayAllDrivers() {
-			System.out.println(allDrivers.toString());
+		public String displayPendingRides(){
+			return this.pendingRides.toString();
 		}
-		public void displayAllClients() {
-			System.out.println(allClients.toString());
+		public String displayAllDrivers() {
+			return allDrivers.toString();
+		}
+		public String displayAllClients() {
+			return allClients.toString();
 		}
 		
 	}

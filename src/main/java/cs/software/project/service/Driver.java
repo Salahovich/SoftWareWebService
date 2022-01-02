@@ -1,15 +1,11 @@
 package cs.software.project.service;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public class Driver extends User implements OnlyDrivers{
-
+	
 	private String license;
 	private String nationalId;
 	private boolean busy = false;

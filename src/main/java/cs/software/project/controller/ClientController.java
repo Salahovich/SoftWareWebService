@@ -1,7 +1,5 @@
 package cs.software.project.controller;
 
-import java.util.Scanner;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +14,7 @@ public class ClientController {
 	
 	private Client current;
 	private Ride iRide;
-	private Scanner scanner = new Scanner(System.in);
+
 	@GetMapping("/clients/search/{userName}")
 	public Client getClient(@PathVariable String userName) {
 		DataBase.getData().displayAllClients();
@@ -24,7 +22,7 @@ public class ClientController {
 	}
 	
 	@PostMapping("/clients/signup")
-	public String addClient(@RequestBody Client c) {	
+	public String signUp(@RequestBody Client c) {	
 		if(DataBase.getData().clientNameExists(c.getUserName()) ==null) {
 			DataBase.getData().addClientToSystem(c);
 			return "the client has been added successfully to database.";
@@ -46,7 +44,7 @@ public class ClientController {
 	}
 	
 	@GetMapping("clients/menu")
-	public String signIn() {
+	public String menu() {
 		if(current != null) {
 			return "Welcome client " + current.getUserName() + " to system." + " -- Balance = " + current.getWallet().getBalance()
 			+ "\n1- Take a ride" + 
@@ -136,11 +134,16 @@ public class ClientController {
 	public String arrived(@PathVariable int index, @PathVariable int offer) {
 		if(!iRide.eventHappened("Driver arrived at user's location"))
 			iRide.addEvent("Driver arrived at user's location");
-		return "Driver arrived at user's location.";
+		return "Driver arrived at your location.";
 	}
 	@PutMapping("clients/3/{index}/{offer}/reached")
 	public String reached(@PathVariable int index, @PathVariable int offer) {
-		iRide.addEvent("Driver reached to user's location");
+		if(!iRide.eventHappened("Driver reached user's destination"))
+			iRide.addEvent("Driver reached user's destination");
+		return "Driver reached your destination";
+	}
+	@PutMapping("clients/3/{index}/{offer}/finished")
+	public String finished(@PathVariable int index, @PathVariable int offer) {
 		Driver d = iRide.getOffer(offer);
 		d.setIdle();
 		iRide.completeTheRide(d, offer);

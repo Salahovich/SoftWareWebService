@@ -1,9 +1,5 @@
 package cs.software.project.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class User {
 	
 	/**

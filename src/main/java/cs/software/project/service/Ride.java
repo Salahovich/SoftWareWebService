@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Date;
 
 public class Ride {
@@ -25,6 +24,7 @@ public class Ride {
 		this.events = new ArrayList<>();
 	}
 	Ride(String s, String d, Client c){
+		this();
 		this.source = s;
 		this.destination = d;
 		this.mainPassenger = c;
@@ -40,7 +40,7 @@ public class Ride {
 		this.mainDriver.addCompleteRide(this);		
 		
 		double discounted = makeDiscount(cost);
-		System.out.println(discounted);
+
 		this.mainPassenger.getWallet().withdraw(discounted);
 		this.mainPassenger.addRideToComplete(this);
 
@@ -49,6 +49,7 @@ public class Ride {
 		availableDrivers.put(cost, iDriver);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public double makeDiscount(double cost) {
 		double discounted = cost;
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -67,6 +68,8 @@ public class Ride {
 		}
 		if(this.friends.size() == 2)
 			discounted -=  0.05*cost; 
+		if(d.getDay() == 5)
+			discounted -= 0.05*cost;
 		if(d.getDay() == date.getDay() && d.getMonth() == date.getMonth() )
 			discounted -=  0.1*cost;
 		return discounted;

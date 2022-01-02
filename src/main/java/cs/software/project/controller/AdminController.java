@@ -3,16 +3,12 @@ package cs.software.project.controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 import cs.software.project.service.Admin;
 import cs.software.project.service.DataBase;
-import cs.software.project.service.Driver;
 
 @RestController
 public class AdminController {
@@ -31,7 +27,7 @@ public class AdminController {
 	@DeleteMapping("/admin/3/{userName}")
 	public String deleteClient(@PathVariable String userName) {
 		if(DataBase.getData().clientNameExists(userName) != null) {
-			myAdmin.suspendClient(userName);
+			Admin.suspendClient(userName);
 			return "Client has been deleted succesfully";
 		}else {
 			return "There's such a client";
@@ -50,11 +46,11 @@ public class AdminController {
 	
 	@PutMapping("/admin/5/{area}")
 	public String addAreas(@PathVariable String area) {
-		myAdmin.addDiscountArea(area);
+		Admin.addDiscountArea(area);
 		return "Area added succesfully.";
 	}
 	@GetMapping("/admin/4")
-	public String showPenidingState() {
+	public String showPenidingRides() {
 		return Admin.DisplayAllPendingRides();
 	}
 	@GetMapping("/admin/4/{index}")
@@ -67,7 +63,7 @@ public class AdminController {
 		return Admin.getPendingDrivers().toString();
 	}
 	@GetMapping("/admin/1/{userName}")
-	public String showPendingDrivers(@PathVariable String userName) {
+	public String acceptPendingDriver(@PathVariable String userName) {
 		if(Admin.AcceptDriver(userName))
 			return "Driver " + userName +"has been added successfully to database";
 		else

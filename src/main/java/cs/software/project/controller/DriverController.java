@@ -23,7 +23,7 @@ public class DriverController {
 	}
 	
 	@PostMapping("/drivers/signup")
-	public String addDriver(@RequestBody Driver c) {	
+	public String signUp(@RequestBody Driver c) {	
 		if(DataBase.getData().driverNameExists(c.getUserName()) ==null) {
 			Admin.addToPendingDrivers(c);
 			return "the driver has been added to pending queue.";

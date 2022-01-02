@@ -20,8 +20,9 @@ public class Event {
 		return this.eventDate;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public String toString() {
-		return eventName + " at " + eventDate.getTime();
+		return eventName + " at " + eventDate.getHours() + ":" + eventDate.getMinutes();
 	}
 }
 

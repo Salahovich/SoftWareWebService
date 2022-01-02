@@ -1,8 +1,6 @@
 package cs.software.project.service;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Date;
 
 public class Client extends User implements Ratable{
 
